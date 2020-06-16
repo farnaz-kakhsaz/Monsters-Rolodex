@@ -9,14 +9,21 @@ class App extends Component {
     this.state = {
       monsters: [],
       searchField: "",
+      isLoading: false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    const url = "https://jsonplaceholder.typicode.com/users";
+    this.setState({ isLoading: true });
+    fetch(url)
       .then((response) => response.json())
-      .then((data) => this.setState({ monsters: data }));
+      .then((data) => this.setState({ monsters: data, isLoading: false }))
+      .catch((error) => {
+        console.log("Can’t access " + url + " response. Blocked by browser?");
+        throw new Error(error);
+      });
   }
 
   handleChange(event) {
@@ -26,7 +33,6 @@ class App extends Component {
 
   render() {
     const { monsters, searchField } = this.state;
-    console.log(monsters);
     const filteredMonsters = monsters.filter((item) =>
       item.name.toLowerCase().includes(searchField.toLowerCase())
     );
@@ -39,7 +45,11 @@ class App extends Component {
           placeholder="search monsters"
           handleChange={this.handleChange}
         />
-        <CardList monsters={filteredMonsters} />
+        {this.state.isLoading ? (
+          <div className="loading" />
+        ) : (
+          <CardList monsters={filteredMonsters} />
+        )}
       </div>
     );
   }

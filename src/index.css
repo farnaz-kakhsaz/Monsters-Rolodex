@@ -9,6 +9,7 @@ body {
     rgba(7, 27, 82, 1) -50%,
     rgba(0, 128, 128, 1) 100%
   );
+  background-repeat: no-repeat;
 }
 
 code {
